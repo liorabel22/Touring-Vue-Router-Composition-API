@@ -4,9 +4,9 @@ import router from "./router";
 
 const app = createApp(App);
 
-app.use(router);
-
 const GStore = reactive({ flashMessage: "" });
 app.provide("GStore", GStore);
+
+app.use(router);
 
 app.mount("#app");

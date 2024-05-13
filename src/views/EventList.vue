@@ -1,33 +1,37 @@
 <script setup>
-import { ref, onMounted, computed, watchEffect, defineProps } from "vue";
-import EventCard from "@/components/EventCard.vue";
-import EventService from "@/services/EventService.js";
+  import { ref, onMounted, computed, watchEffect, defineProps } from "vue";
+  import { useRouter } from "vue-router";
 
-const props = defineProps(["page"]);
+  import EventCard from "@/components/EventCard.vue";
+  import EventService from "@/services/EventService.js";
 
-const events = ref(null);
-const totalEvents = ref(0);
+  const props = defineProps(["page"]);
 
-const page = computed(() => props.page);
+  const router = useRouter();
 
-const hasNextPage = computed(() => {
-  const totalPages = Math.ceil(totalEvents.value / 2);
-  return page.value < totalPages;
-});
+  const events = ref(null);
+  const totalEvents = ref(0);
 
-onMounted(() => {
-  watchEffect(() => {
-    events.value = null;
-    EventService.getEvents(2, page.value)
-      .then((response) => {
-        events.value = response.data;
-        totalEvents.value = response.headers["x-total-count"];
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const page = computed(() => props.page);
+
+  const hasNextPage = computed(() => {
+    const totalPages = Math.ceil(totalEvents.value / 2);
+    return page.value < totalPages;
   });
-});
+
+  onMounted(() => {
+    watchEffect(() => {
+      events.value = null;
+      EventService.getEvents(2, page.value)
+        .then((response) => {
+          events.value = response.data;
+          totalEvents.value = response.headers["x-total-count"];
+        })
+        .catch(() => {
+          router.push({ name: "NetworkError" });
+        });
+    });
+  });
 </script>
 
 <template>
@@ -56,26 +60,26 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.events {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.pagination {
-  display: flex;
-  width: 290px;
-}
-.pagination a {
-  flex: 1;
-  text-decoration: none;
-  color: #2c3e50;
-}
+  .events {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .pagination {
+    display: flex;
+    width: 290px;
+  }
+  .pagination a {
+    flex: 1;
+    text-decoration: none;
+    color: #2c3e50;
+  }
 
-#page-prev {
-  text-align: left;
-}
+  #page-prev {
+    text-align: left;
+  }
 
-#page-next {
-  text-align: right;
-}
+  #page-next {
+    text-align: right;
+  }
 </style>

@@ -1,19 +1,20 @@
-import axios from 'axios'
+import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: 'https://my-json-server.typicode.com/Code-Pop/Touring-Vue-Router',
+  baseURL:
+    "https://my-json-server.typicode.com/liorabel22/Touring-Vue-Router-Composition-API",
   withCredentials: false,
   headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json'
-  }
-})
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
+});
 
 export default {
-  getEvents() {
-    return apiClient.get('/events')
+  getEvents(perPage, page) {
+    return apiClient.get(`/events?_limit=${perPage}&_page=${page}`);
   },
   getEvent(id) {
-    return apiClient.get('/events/' + id)
-  }
-}
+    return apiClient.get("/events/" + id);
+  },
+};
